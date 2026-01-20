@@ -66,9 +66,22 @@ Here, we do our best to make sure we only have to make a single successful trip 
 1. Bottlenecks:  Stateful operations tend to be I/O bound (either network or disk); whereas stateless operations tend to be CPU bound.  
 1. Intent:  Stateful operations are usually simple in concept (e.g. gets/puts);  whereas stateless operations usually have complex algorithms
 1. Exception handling:  Stateful operations usually require complex handshakes (e.g. distributed transactions with partial commits); whereas stateless operations are usually fairly straightforward in and of themselves.
+1. Trust/Protection:  Stateful operations usually require more safeguards and monitoring; whereas stateless operations are within our boundaries and may have some sensitive areas but are generally more open.
 
-For each and every one of these differences, there are significant gains by keeping them colocated.  For example, as we saw with the grocery store, we can batch calls, parallelize, and optimize payloads.
+For each and every one of these differences, there are significant gains by keeping them colocated.  For example, as we saw with the grocery store, we can batch calls, parallelize, and optimize payloads.  The 2 biggest optimizations from this separation, however, come from:
+1.  How you test:  you should have a vastly different testing strategy for these sections which will drastically simplify and strengthen your test framework.  I'll do another post talking about testing strategies and link from here when that is ready but generally you want contract testing covering your stateful interactions and sandbox testing covering your stateless interactions.  
+1.  How data is trasferred:  by keeping all of your data fetching at the ends of your operation, you make it much easier to change how you receive and send data.  For example, should you have a thin interface which receives identifiers which you immediately query to get the details or do you have a fat interface that has the client pass in all of the details themselves?  Do you have an API style interface or an event style interface?  These choices are much easier to manage if you think of your stateful pieces of code as PART of your interface.
+
+If you find it impossible to segment your stateful and stateless code into sections, you should ask yourself whether you really have a workflow instead of an operation.  Workflows are basically composites of individual operations, with each operation potentially having its own stateful inputs and outputs.  In the recipe example above, if you need to stop at the bank in order to buy food from the grocery store, that really has a different lifecycle of its own.  This can be a difficult conversation, since every operation is hierarchtical to some degree, and has led to why debates like whether monoliths or microservices are the right end of the spectrum.  For now, focus on pushing for those banded areas of separation as they will provide immediate wins at a low level, even if you decide not to go the full-fledged orchestration route.
 
 ## Utility methods, the cooking verbs
 
+TODO: talk about utility chaining
+
 ## Metrics, the serving portions
+
+TODO: talk about protecting future use cases
+
+## Pulling it all together
+
+TODO: discuss graphs of what successful services look like
