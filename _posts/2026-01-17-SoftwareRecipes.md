@@ -7,6 +7,14 @@ date: 2026-01-17
 
 Recipes are universal communication structures used by many cultures, expressed in a variety of languages, across many generations.  When exchanged between individuals, recipes may not be easy to follow but they generally are easy to understand, at a high level even from a quick glance.  However, this usually isn't true for software.  Why is that?  The blog attempts to distill the secrets about recipes and how we can apply them to make software easier to understand.
 
+## Charter, the dish name
+
+"Scott, what are you making for us?"
+
+"Well, I'm making flour mixed with water, yeast, salt, and oil, mixed for 3 minutes..."
+
+Ummm, no.  You're making pizza (Sicilian pizza to be exact)!  And the fact that you are making pizza is important... especially to those who eat it.  There are a thousand recipes that use flour, water, and yeast but whether it is right or not is based upon the final outcome and how it differs from what the recipe was trying to do.  Too often, engineers forget that.  Perhaps it is because we are obsessed with how things are wired and start to see things by their components.  But applications are greater than the sum of their parts.  That is important because you need to measure it (via success metrics) based on how well it is doing its job.  I won't say defining charter and naming things is easy.  In fact, naming is one of the hardest things in software.  Charters change and it is difficult to change APIs once they are in place.  However, it doesn't mean it doesn't matter.  Therefore, avoid weasel names that don't really say anything at all (e.g. manager, handler -- after all everything manages and/or handles SOMETHING otherwise it wouldn't exist at all) and focus on intent.  It should be clear what things should be included and what things should be excluded.  If you don't have a strong opinion on it, then I promise you that the service will get misused as a garbage heap for every piece of logic that has no better home.  I don't know about you but I'm not too excited by eating a garbage pizza.
+
 ## Data, the ingredient shopping list
 
 One of the most useful things about a recipe is that it tells you everything that is needed in advance.  This is useful because it is a fairly heavyweight operation going to the grocery store to pick up new supplies.  If you do that fetching lazily, you may find yourself going to the grocery store multiple times for individual products.  However, this is exactly how most computer programs are written (with data accesses multiple layers deep within the call hierarchy):
