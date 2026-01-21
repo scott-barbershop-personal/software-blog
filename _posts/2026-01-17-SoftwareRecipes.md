@@ -5,7 +5,7 @@ date: 2026-01-17
 
 ![Recipe](https://github.com/scott-barbershop-personal/software-blog/blob/main/images/recipe.png?raw=true)
 
-Recipes are universal communication structures used by many cultures, expressed in a variety of languages, across many generations.  When exchanged between individuals, recipes may not be easy to follow but they generally are easy to understand, at a high level even from a quick glance.  However, this usually isn't true for software.  Why is that?  The blog attempts to distill the secrets about recipes and how we can apply them to make software easier to understand.
+Recipes are universal communication structures used by many cultures, expressed in a variety of languages, across many generations.  When exchanged between individuals, recipes may not be easy to follow but they generally are easy to understand, at a high level and from a quick glance.  However, this usually isn't true for software.  Why is that?  The blog attempts to distill the secrets about recipes and how we can apply them to make software easier to understand.
 
 ## Charter, the dish name
 
@@ -13,38 +13,44 @@ Recipes are universal communication structures used by many cultures, expressed 
 
 "Well, I'm making flour mixed with water, yeast, salt, and oil, mixed for 3 minutes..."
 
-Ummm, no.  You're making pizza (Sicilian pizza to be exact)!  And the fact that you are making pizza is important... especially to those who eat it.  There are a thousand recipes that use flour, water, and yeast but whether it is right or not is based upon the final outcome and how it differs from what the recipe was trying to do.  Too often, engineers forget that.  Perhaps it is because we are obsessed with how things are wired and start to see things by their components.  But applications are greater than the sum of their parts.  That is important because you need to measure it (via success metrics) based on how well it is doing its job.  I won't say defining charter and naming things is easy.  In fact, naming is one of the hardest things in software.  Charters change and it is difficult to change APIs once they are in place.  However, it doesn't mean it doesn't matter.  Therefore, avoid weasel names that don't really say anything at all (e.g. manager, handler -- after all everything manages and/or handles SOMETHING otherwise it wouldn't exist at all) and focus on intent.  It should be clear what things should be included and what things should be excluded.  If you don't have a strong opinion on it, then I promise you that the service will get misused as a garbage heap for every piece of logic that has no better home.  I don't know about you but I'm not too excited by eating a garbage pizza.
+Ummm, no.  You're making pizza (Sicilian pizza to be exact)!  And the fact that you are making pizza is important... especially to those who eat it.  There are a thousand recipes that use flour, water, and yeast but whether it is right or not is based upon the final outcome and how it differs from what the recipe was trying to do.  Too often, engineers forget that.  Perhaps it is because we are obsessed with how things are wired and start to see things by their components.  But applications are greater than the sum of their parts.  That is important because you need to measure it (via success metrics) based on how well it is doing its job.  
+
+I won't say defining charter and naming things is easy.  In fact, naming is one of the hardest things in software.  Charters change and it is difficult to change APIs once they are in place.  However, it doesn't mean it doesn't matter.  Therefore, avoid weasel names that don't really say anything at all (e.g. manager, handler -- after all everything manages and/or handles SOMETHING otherwise it wouldn't exist at all) and focus on intent.  It should be clear what things should be included and what things should be excluded.  If you don't have a strong opinion on it, then I promise you that the service will get misused as a garbage heap for every piece of logic that has no better home.  I don't know about you but I'm not too excited about eating a garbage pizza.
 
 ## Data, the ingredient shopping list
 
 One of the most useful things about a recipe is that it tells you everything that is needed in advance.  This is useful because it is a fairly heavyweight operation going to the grocery store to pick up new supplies.  If you do that fetching lazily, you may find yourself going to the grocery store multiple times for individual products.  However, this is exactly how most computer programs are written (with data accesses multiple layers deep within the call hierarchy):
 ```java
-IngredientStore ingredientStore = new FallbackCache(cubbord, groceryStore); // we try the cubbord first but go to the grocery store, if necessary
+IngredientStore ingredientStore = new FallbackCache(cubbord, groceryStore); 
 Dough dough = new Dough(ingredientStore);
 Sauce sauce = new Sauce(ingredientStore);
-dough.knead(); // Note: this looks harmless enough since we don’t take in a groceryStore object but beware below!
-…
+dough.knead();
+```
+The ingredient store is a typical strategy where we first fetch ingredients from the cubbord first if they are available.  If they aren't, we'll run to the grocery store.
+
+This code looks pretty harmless.  However, most dangerous code usually does... that's what makes it dangerous!  Let's dive into how dough is implemented to see why this is so dangerous:
+```java
 public static class Dough {
     public Dough(IngredientStore ingredientStore) {
         this.ingredientStore = ingredientStore;
         mix(
-            this.ingredientStore.fetch(Flour.class, 2, CUPS), // first trip to the store.  This may be expected
-            this.ingredientStore.fetch(Yeast.class, 1, PACKAGE),  // oops unexpected second trip to the store
-            this.ingredientStore.fetch(Salt.class, 1.5, TEASPOONS));  // oops unexpected third trip to the store
+            this.ingredientStore.fetch(Flour.class, 2, CUPS), 
+            this.ingredientStore.fetch(Yeast.class, 1, PACKAGE),  
+            this.ingredientStore.fetch(Salt.class, 1.5, TEASPOONS)); 
         …
     }
 
     public void knead() {
-        // ooh, sneaky:  Since we are a member class of Dough, we have hidden access to the groceryStore here!
-        Flour flourForTable = this.ingredientStore.fetch(Flour.class, .5, CUPS);  // oops REALLY unexpected fourth trip to the store (who can 
-                                                                                  // blame us for not knowing we needed to buy more the first time)!
+        Flour flourForTable = this.ingredientStore.fetch(Flour.class, .5, CUPS);
         …
     }
 }
 ```
-Let’s say that we want to add a budget to this code, since we’re tight on money.  First off, implementing budget is a pretty difficult task because we can’t do it in a single spot.  No worry, you say!  We can implement it within the IngredientStore… However, now we have even more hidden state in our system and it has some very nasty side effects:  you may find out only after the fifth trip to the store, you don’t have enough money to buy the most important toppings at the end of the recipe (especially since some of our budget is going to gasoline to go to/from the store many times).  Even worse, by the time that we realize that we’re out of money, we’ve already used all our money and ingredients on a recipe we can’t finish.  We’re going to have to be very clever on how to make a meal with a half completed dough.  After all, our family is hungry and we’ve promised to make a meal of some kind for them.
+At first glance, this code doesn't look dangerous either but it is.  If our cubbords are empty, we've made 4 separate trips to the grocery store!  The trip inside the ```knead()``` function is particularly surprising because its access to the ingredientStore is hidden via member access and it's asking for something that is small and tangental to the task it is trying to accomplish.  Not many people looking at the top level function would expect a trip to the store happening there.  Writing good code is all about being as straightforward and unsurprising as possible and this setup has completely failed us here.
 
-Instead, consider how much cleaner the solution is with all of the data access taken care of up front (maybe not perfect… but better than before):
+This code isn't just dangerous from an operational perspective.  It is also dangerous because it facilitates extra complexity for each new feature we want to add.  Let’s say that we want to add a budget restriction to this code, since we’re tight on money.  First off, implementing budget is a pretty difficult task because we can’t do it in a single spot.  "Don't worry", you say!  "We can implement it within the IngredientStore…" However, now we have even more hidden state in our system and it has some very nasty side effects:  you may find out only after the fifth trip to the store, you don’t have enough money to buy the most important toppings at the end of the recipe (especially since some of our budget is going to gasoline to go to/from the store many times).  Even worse, by the time that we realize that we’re out of money, we’ve already started using all our money and ingredients on a recipe we can’t finish.  We’re going to have to be very clever on how to make a meal with a half completed dough.  After all, our family is hungry and we’ve promised to make a meal.
+
+How can we improve?  Let's change our software to work like we cook, by getting all of the ingredients up front:
 ```java
 Flour flourForDough = new Ingredient(Flour.class, 2, CUPS);
 Flour flourForKneading = new Ingredient(Flour.class, .5, CUPS);
@@ -64,12 +70,14 @@ Dough dough = new Dough()
 dough.mix(flourForDough, …);
 dough.knead(flourForKneading, …);
 ```
-Here, we do our best to make sure we only have to make a single successful trip to the store so that when we get back to the kitchen, we can focus on cooking.  This same rule applies when programming.  Your application code should have 3 clear, separate sections:
-1. Fetching all the data necessary to do your work
-1. Doing your work
-1. Sending the output of your work
+Here, we gather all of the ingredient requirements up front, make a single trip to the grocery store, and only buy everything if we have enough money (using a single transaction).  Now, once we get back to the kitchen, we can focus on cooking.  We are confident that we won't be surprised with any trips to the grocery store because the Dough class doesn't have access to the groceryStore object.
 
-#1 and #3 heavyweight operations which we'll call "stateful operations" because they usually focus on transferring state in and out of the application (e.g. via services, databases, hard disks).  We'll call #2 "stateless" since it is focused on tranformations on that state.  There are some pretty significant differences between stateful and stateless work:
+The same thing goes for application software.  It should have 3 clear, separate sections:
+1. Fetching all the data necessary to do its work
+1. Doing its work
+1. Sending the output of its work
+
+#1 and #3 are heavyweight operations which we'll call "stateful operations" because they usually focus on transferring state in and out of the application (e.g. via services, databases, hard disks).  We'll call #2 "stateless" since it doesn't interact with external actors (especially if you are following best practices of using immutable objects, something I'll talk about in a future blog).  There are some pretty significant differences between stateful and stateless work:
 1. Authority:  Stateful operations leverage external authorities (e.g. using a DB schema or a external service's API); whereas stateless work is the secret sauce of the application and uses its own authoritative mechanisms.
 1. Bottlenecks:  Stateful operations tend to be I/O bound (either network or disk); whereas stateless operations tend to be CPU bound.  
 1. Intent:  Stateful operations are usually simple in concept (e.g. gets/puts);  whereas stateless operations usually have complex algorithms
