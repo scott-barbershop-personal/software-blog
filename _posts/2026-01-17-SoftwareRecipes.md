@@ -23,8 +23,9 @@ One of the most useful things about a recipe is that it tells you everything tha
 ```java
 IngredientStore ingredientStore = new FallbackCache(cubbord, groceryStore); 
 Dough dough = new Dough(ingredientStore);
-Sauce sauce = new Sauce(ingredientStore);
+dough.mix();
 dough.knead();
+...
 ```
 The ingredient store is a typical strategy where we first fetch ingredients from the cubbord first if they are available.  If they aren't, we'll run to the grocery store.
 
@@ -33,11 +34,13 @@ This code looks pretty harmless.  However, most dangerous code usually does... t
 public static class Dough {
     public Dough(IngredientStore ingredientStore) {
         this.ingredientStore = ingredientStore;
-        mix(
-            this.ingredientStore.fetch(Flour.class, 2, CUPS), 
-            this.ingredientStore.fetch(Yeast.class, 1, PACKAGE),  
-            this.ingredientStore.fetch(Salt.class, 1.5, TEASPOONS)); 
-        …
+    }
+
+    public void mix() {
+        Flour flour = this.ingredientStore.fetch(Flour.class, 2, CUPS);
+        Yeast yeast = this.ingredientStore.fetch(Yeast.class, 1, PACKAGE);
+        Salt salt = this.ingredientStore.fetch(Salt.class, 1.5, TEASPOONS));
+        ... 
     }
 
     public void knead() {
@@ -58,21 +61,20 @@ List<Ingredient> totalIngredientsRequired = List.of(
     flourForDough,
     flourForKneading, 
     …);
-List<Ingredient> missingIngredients = ... // we’ll talk about this later.  Basically, we need to know how much we need to buy from the store
-if (!missingIngredients.isEmpty()) {
+List<Ingredient> lackingIngredients = subtract(totalIngredientsRequired, cubbord.getIngredients())
+if (!lackingIngredients.isEmpty()) {
     groceryStore.conditionallyBuy( // either buy them all or buy none and throw
-            missingIngredients,
+            lackingIngredients,
             new Currency(100.00, USD)); // our budget
 }
 // we’re ready to start the recipe with all of our ingredients required
-…
 Dough dough = new Dough()
 dough.mix(flourForDough, …);
 dough.knead(flourForKneading, …);
 ```
-Here, we gather all of the ingredient requirements up front, make a single trip to the grocery store, and only buy everything if we have enough money (using a single transaction).  Now, once we get back to the kitchen, we can focus on cooking.  We are confident that we won't be surprised with any trips to the grocery store because the Dough class doesn't have access to the groceryStore object.
+Here, we gather all of the ingredient requirements up front, make a single trip to the grocery store, and only buy everything if we have enough money (using a single transaction).  Now, once we get back to the kitchen, we can focus on cooking.  We are confident that we won't be surprised with any trips to the grocery store because the Dough class doesn't have access to the groceryStore object.  This is a nice simplification since the Dough class doesn't really have strong context on how to best make trips to grocery stores, anyhow.
 
-The same thing goes for application software.  It should have 3 clear, separate sections:
+This best practice applies for most application software.  Top level operations should have 3 clear, separate sections:
 1. Fetching all the data necessary to do its work
 1. Doing its work
 1. Sending the output of its work
