@@ -1,3 +1,8 @@
+---
+title: "Best Practices"
+date: 2026-05-08
+---
+
 From 2026-05-05 09:09:56 UTC, e56548eac905e7f9c3a2206cc89e0ca1207ab3c9
 
 ## README.md
