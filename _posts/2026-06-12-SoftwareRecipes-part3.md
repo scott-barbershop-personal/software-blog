@@ -1,5 +1,5 @@
 ---
-title: "Structuring software as if they were recipes: Part 3"
+title: "Structuring software as if they were recipes - Part 3"
 date: 2026-06-12
 ---
 
