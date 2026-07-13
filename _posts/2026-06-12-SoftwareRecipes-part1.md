@@ -5,7 +5,7 @@ date: 2026-06-12
 
 ![Recipe](https://github.com/scott-barbershop-personal/software-blog/blob/main/images/recipe.png?raw=true)
 
-Welcome back to the Software Kitchen.  As part of this 4 part series, we're making: a well-chartered software component, lightly seasoned with clear responsibilities, hold the scope creep.  You'll find it is surprisingly easy to make and it'll impress your guests.  Let's get started!  
+Welcome to the Software Kitchen.  As part of this 4 part series, we're making: a well-chartered software component, lightly seasoned with clear responsibilities, hold the scope creep.  You'll find it is surprisingly easy to make and it'll impress your guests.  Let's get started!  
 
 But why food recipes?
 
