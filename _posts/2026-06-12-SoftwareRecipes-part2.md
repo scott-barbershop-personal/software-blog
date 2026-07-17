@@ -3,7 +3,7 @@ title: "Structuring software as if they were recipes - Part 2"
 date: 2026-06-12
 ---
 
-![Recipe](https://github.com/scott-barbershop-personal/software-blog/blob/main/images/recipe.png?raw=true)
+![Recipe]({{ site.baseurl }}/images/recipe.png)
 
 Welcome back to Software Kitchen.  Today, in part 2, we're covering: where you get your ingredients from matters.  So, let's make a recipe today that only requires a single trip to the grocery store... which can be a lifesaver for those who own gas-guzzling cars.  Let's get started!
 
@@ -78,3 +78,7 @@ Top level operations should have 3 clear, separate sections:
 1. Fetching all the data necessary to do its work
 1. Doing its work
 1. Committing the output of its work
+
+---
+
+That's all we have time for today.  In [Part 3]({{ site.baseurl }}{% post_url 2026-06-12-SoftwareRecipes-part3 %}), I hope you have a good knife set!  Thanks for joining us in the Software Kitchen — see you next time!
