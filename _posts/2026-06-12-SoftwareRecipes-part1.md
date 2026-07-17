@@ -3,7 +3,7 @@ title: "Structuring software as if they were recipes - Part1"
 date: 2026-06-12
 ---
 
-![Recipe](https://github.com/scott-barbershop-personal/software-blog/blob/main/images/recipe.png?raw=true)
+![Recipe](/images/recipe.png)
 
 Welcome to the Software Kitchen.  As part of this 4 part series, we're making: a well-chartered software component, lightly seasoned with clear responsibilities, hold the scope creep.  You'll find it is surprisingly easy to make and it'll impress your guests.  Let's get started!  
 
@@ -29,3 +29,7 @@ A pizza is a pizza, no matter how you use it.  Pizzas don't make very good carja
 
 ### Takeaways
 When examining software, try to understand what is its primary responsibility and what it is allowed to do to get it done.  Each component, from the smallest utility to the largest service, will each have their own charter.  Be very skeptical of any work that a component does that does not align with its charter.  Document the charter and responsibilities, leaving out how it is currently used.
+
+---
+
+That's all we have time for today.  In [Part 2]({% post_url 2026-06-12-SoftwareRecipes-part2 %}), I hope you like going to the grocery store!  Thanks for joining us in the Software Kitchen — see you next time!
