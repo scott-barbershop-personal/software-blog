@@ -3,7 +3,7 @@ title: "Structuring software as if they were recipes - Part 4"
 date: 2026-06-12
 ---
 
-![Recipe](https://github.com/scott-barbershop-personal/software-blog/blob/main/images/recipe.png?raw=true)
+![Recipe]({{ site.baseurl }}/images/recipe.png)
 
 Welcome back to the Software Kitchen. Today we're taking our pizza making skills to the big leagues by opening our own pizza restaurant.  And then, if we're not careful, watching it become a victim of its own success. Let's get started!
 
@@ -69,7 +69,7 @@ The other managers' spaces echo the same chaos.  Your eyes water.  You've been m
 
 This is the core problem with middle managers in software and kitchens alike: they don't make decisions, they route them.  The API layer above has no real charter — it's supposed to make a Sicilian pizza but immediately hands the job to someone else (sound familiar from Part 1?).  The PizzaManager becomes the single chokepoint for every pizza decision, growing more complex with every new type, topping, and customization that gets forwarded to it.  Once developers learn this pattern, it multiplies: PizzaManager spawns CheeseManager, DoughManager, SauceManager, each with their own expanding fiefdoms:  
 
-![Middle Manager Graph](https://github.com/scott-barbershop-personal/software-blog/blob/main/images/MiddleManagerGraphs.png?raw=true)
+![Middle Manager Graph]({{ site.baseurl }}/images/MiddleManagerGraphs.png)
 
 The fix is simple in concept: give each pizza its own station. A chef who owns their recipe from start to finish, using strong shared utilities (the cooking verbs from Part 3) for the common heavy lifting:
 ```
@@ -107,3 +107,7 @@ Notice how easy it is to see the differences; and what differences they are... e
 ## Takeaways
 
 Keep your business logic at the top layer and your utilities sharp at the bottom. Middle-manager classes that group by shared implementation rather than by purpose add complexity without adding value. If you find yourself writing a class whose job is to route decisions to other classes, that's your cue to rethink the organization — not add another manager.  If you need assistants, keep them narrow -- one job/responsibility, not the whole menu or restaurant.
+
+---
+
+And that's the final dish!  We've come a long way in the Software Kitchen.  We went from figuring out what we were going to cook to opening our own restaurant.  Who knows what we'll have in store next.  Thanks for joining us in the Software Kitchen — bon appétit!
