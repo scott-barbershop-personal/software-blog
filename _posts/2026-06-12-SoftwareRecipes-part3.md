@@ -3,7 +3,7 @@ title: "Structuring software as if they were recipes - Part 3"
 date: 2026-06-12
 ---
 
-![Recipe](https://github.com/scott-barbershop-personal/software-blog/blob/main/images/recipe.png?raw=true)
+![Recipe]({{ site.baseurl }}/images/recipe.png)
 
 Welcome back to Software Kitchen.  Today, in part 3, we're sharpening our knives because a chef is only as good as their tools.  And the same is painfully true in software.  Let's get started!
 
@@ -47,3 +47,6 @@ Focus on charter when determining what should exist within a function/applicatio
 1. This process is recursive:  utilities may rely on other utilities to do the boilerplate code that are not important
 1. Utility parameters should never have default values, unless they are a kind of boilerplate code that clients never will care about
 
+---
+
+That's all we have time for today.  In [Part 4]({{ site.baseurl }}{% post_url 2026-06-12-SoftwareRecipes-part4 %}), I hope you're ready to open a restaurant!  Thanks for joining us in the Software Kitchen — see you next time!
