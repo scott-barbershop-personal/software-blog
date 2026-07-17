@@ -3,7 +3,7 @@ title: "Structuring software as if they were recipes - Part1"
 date: 2026-06-12
 ---
 
-![Recipe](/images/recipe.png)
+![Recipe]({{ site.baseurl }}/images/recipe.png)
 
 Welcome to the Software Kitchen.  As part of this 4 part series, we're making: a well-chartered software component, lightly seasoned with clear responsibilities, hold the scope creep.  You'll find it is surprisingly easy to make and it'll impress your guests.  Let's get started!  
 
@@ -32,4 +32,4 @@ When examining software, try to understand what is its primary responsibility an
 
 ---
 
-That's all we have time for today.  In [Part 2]({% post_url 2026-06-12-SoftwareRecipes-part2 %}), I hope you like going to the grocery store!  Thanks for joining us in the Software Kitchen — see you next time!
+That's all we have time for today.  In [Part 2]({{ site.baseurl }}{% post_url 2026-06-12-SoftwareRecipes-part2 %}), I hope you like going to the grocery store!  Thanks for joining us in the Software Kitchen — see you next time!
